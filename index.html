@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডিজিটাল তাজবিহ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            width: 320px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .counter {
+            font-size: 72px;
+            font-weight: bold;
+            color: #3498db;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            background-color: #3498db;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .dhikr-text {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            min-height: 36px;
+        }
+        
+        .settings {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ডিজিটাল তাজবিহ</h1>
+        
+        <div class="dhikr-text" id="dhikrText">সুবহানাল্লাহ</div>
+        <div class="counter" id="counter">0</div>
+        
+        <div class="buttons">
+            <button id="countBtn">গণনা করুন</button>
+            <button id="resetBtn" class="reset-btn">রিসেট</button>
+        </div>
+        
+        <div class="settings">
+            <select id="dhikrSelect">
+                <option value="সুবহানাল্লাহ">সুবহানাল্লাহ</option>
+                <option value="499 বার,,, লা হাওলা ওয়ালা কুওয়াতা ইল্লা বিল্লা">499 বার,,লা  ইল্লা বিল্লা</option>
+                <option value="আলহামদুলিল্লাহ">আলহামদুলিল্লাহ</option>
+                <option value="আল্লাহু আকবার">আল্লাহু আকবার</option>
+                <option value="লা ইলাহা ইল্লাল্লাহ">লা ইলাহা ইল্লাল্লাহ</option>
+                <option value="আস্তাগফিরুল্লাহ">আস্তাগফিরুল্লাহ</option>
+            </select>
+            
+            <select id="targetSelect">
+                <option value="33">33 বার</option>
+                <option value="100">100 বার</option>
+                <option value="499">499</option>
+                <option value="1000">1000 বার</option>
+                <option value="0">কাস্টম</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countBtn = document.getElementById('countBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const counter = document.getElementById('counter');
+            const dhikrText = document.getElementById('dhikrText');
+            const dhikrSelect = document.getElementById('dhikrSelect');
+            const targetSelect = document.getElementById('targetSelect');
+            
+            let count = 0;
+            let target = 33;
+            
+            // Update target when selection changes
+            targetSelect.addEventListener('change', function() {
+                target = parseInt(this.value);
+                updateCounterColor();
+            });
+            
+            // Update dhikr text when selection changes
+            dhikrSelect.addEventListener('change', function() {
+                dhikrText.textContent = this.value;
+            });
+            
+            // Count button click handler
+            countBtn.addEventListener('click', function() {
+                count++;
+                counter.textContent = count;
+                updateCounterColor();
+                
+                // Vibrate on count (if supported)
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                // Check if target reached
+                if (target > 0 && count >= target) {
+                    counter.style.color = '#27ae60';
+                    setTimeout(() => {
+                        alert(`লক্ষ্য অর্জিত! ${target} বার ${dhikrSelect.value} পড়া সম্পন্ন হয়েছে।`);
+                    }, 100);
+                }
+            });
+            
+            // Reset button click handler
+            resetBtn.addEventListener('click', function() {
+                count = 0;
+                counter.textContent = count;
+                updateCounterColor();
+            });
+            
+            // Update counter color based on progress
+            function updateCounterColor() {
+                if (target > 0) {
+                    const progress = count / target;
+                    if (progress >= 1) {
+                        counter.style.color = '#27ae60'; // Green when target reached
+                    } else if (progress >= 0.75) {
+                        counter.style.color = '#f39c12'; // Orange when close
+                    } else {
+                        counter.style.color = '#3498db'; // Blue default
+                    }
+                } else {
+                    counter.style.color = '#3498db'; // Blue for custom mode
+                }
+            }
+            
+            // Keyboard support
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' || e.key === ' ') {
+                    e.preventDefault();
+                    countBtn.click();
+                } else if (e.key === 'r' || e.key === 'R') {
+                    resetBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
